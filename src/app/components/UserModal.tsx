@@ -1,5 +1,5 @@
 import { User } from '../data/mockData';
-import { X, DollarSign, Clock, Calendar } from 'lucide-react';
+import { DollarSign, Clock, Calendar } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 
 interface UserModalProps {
@@ -20,30 +20,21 @@ export function UserModal({ user, open, onClose }: UserModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-[#111111] border-gray-800 text-white max-w-2xl">
+      <DialogContent className="max-w-2xl border-[#E5E7EB] bg-white text-[#111827]">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>User Details</span>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </DialogTitle>
+          <DialogTitle>User Details</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* User Info */}
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-xl font-semibold">
+            <div className="h-14 w-14 rounded-md border border-[#BFDBFE] bg-[#EFF6FF] text-lg font-semibold text-[#1D4ED8] flex items-center justify-center">
               {user.avatar}
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-semibold">{user.name}</h3>
-              <p className="text-gray-400">{user.email}</p>
+              <p className="text-sm text-[#6B7280]">{user.email}</p>
               <div className="flex items-center gap-4 mt-2">
-                <div className="flex items-center gap-1 text-sm text-gray-400">
+                <div className="flex items-center gap-1 text-sm text-[#6B7280]">
                   <Calendar className="w-4 h-4" />
                   Joined {new Date(user.joinDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                 </div>
@@ -51,64 +42,61 @@ export function UserModal({ user, open, onClose }: UserModalProps) {
             </div>
           </div>
 
-          {/* Stats */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="bg-gray-800/30 border border-gray-800 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-green-500 mb-1">
+            <div className="rounded-md border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+              <div className="mb-1 flex items-center gap-2 text-[#166534]">
                 <DollarSign className="w-4 h-4" />
                 <span className="text-xs font-medium">Balance</span>
               </div>
-              <p className="text-2xl font-semibold">${user.balance.toFixed(2)}</p>
+              <p className="text-2xl font-semibold text-[#111827]">${user.balance.toFixed(2)}</p>
             </div>
-            <div className="bg-gray-800/30 border border-gray-800 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-blue-500 mb-1">
+            <div className="rounded-md border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+              <div className="mb-1 flex items-center gap-2 text-[#1D4ED8]">
                 <Calendar className="w-4 h-4" />
                 <span className="text-xs font-medium">Sessions</span>
               </div>
-              <p className="text-2xl font-semibold">{user.totalSessions}</p>
+              <p className="text-2xl font-semibold text-[#111827]">{user.totalSessions}</p>
             </div>
-            <div className="bg-gray-800/30 border border-gray-800 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-purple-500 mb-1">
+            <div className="rounded-md border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+              <div className="mb-1 flex items-center gap-2 text-[#4B5563]">
                 <Clock className="w-4 h-4" />
                 <span className="text-xs font-medium">Total Hours</span>
               </div>
-              <p className="text-2xl font-semibold">{user.totalHours}h</p>
+              <p className="text-2xl font-semibold text-[#111827]">{user.totalHours}h</p>
             </div>
           </div>
 
-          {/* Recent Sessions */}
           <div>
-            <h4 className="font-semibold mb-3">Recent Sessions</h4>
+            <h4 className="mb-3 text-sm font-semibold text-[#111827]">Recent Sessions</h4>
             <div className="space-y-2">
               {recentSessions.map(session => (
                 <div
                   key={session.id}
-                  className="flex items-center justify-between p-3 bg-gray-800/30 border border-gray-800 rounded-lg"
+                  className="flex items-center justify-between rounded-md border border-[#E5E7EB] bg-white p-3"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-500/10 border border-blue-500/30 rounded-lg flex items-center justify-center text-blue-500">
-                      <Clock className="w-5 h-5" />
+                    <div className="h-9 w-9 rounded-md border border-[#D1D5DB] bg-[#F9FAFB] flex items-center justify-center text-[#6B7280]">
+                      <Clock className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="font-medium">{session.pc}</p>
-                      <p className="text-sm text-gray-400">{session.date}</p>
+                      <p className="text-sm font-medium text-[#111827]">{session.pc}</p>
+                      <p className="text-xs text-[#6B7280]">{session.date}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium">{session.duration}</p>
-                    <p className="text-sm text-gray-400">{session.cost}</p>
+                    <p className="text-sm font-medium text-[#111827]">{session.duration}</p>
+                    <p className="text-xs text-[#6B7280]">{session.cost}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3">
-            <button className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+            <button className="flex-1 rounded-md border border-[#2563EB] bg-[#2563EB] px-4 py-2 text-sm font-medium text-white hover:bg-[#1D4ED8] transition-colors">
               Add Balance
             </button>
-            <button className="flex-1 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors">
+            <button className="flex-1 rounded-md border border-[#D1D5DB] bg-white px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#F9FAFB] transition-colors">
               View Full History
             </button>
           </div>

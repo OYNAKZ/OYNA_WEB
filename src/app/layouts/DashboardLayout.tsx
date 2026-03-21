@@ -11,62 +11,60 @@ const navigation = [
 
 export function DashboardLayout() {
   const location = useLocation();
+  const currentPage = navigation.find((item) => item.href === location.pathname)?.name || 'Dashboard';
 
   return (
-    <div className="min-h-screen bg-[#0f0f14] text-white">
-      <aside className="fixed inset-y-0 left-0 z-40 w-64 bg-[#171722] border-r border-[#2a2a3b] flex flex-col">
-        <div className="h-16 flex items-center px-6 border-b border-[#2a2a3b]">
+    <div className="min-h-screen bg-[#F6F7F9] text-[#111827]">
+      <aside className="border-b border-[#E5E7EB] bg-[#1F2937] md:fixed md:inset-y-0 md:left-0 md:z-40 md:w-64 md:border-b-0 md:border-r md:border-[#374151] md:flex md:flex-col">
+        <div className="h-14 flex items-center px-4 md:px-5 border-b border-[#374151]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-sm font-bold">OY</div>
+            <div className="w-8 h-8 rounded-md bg-[#2563EB] flex items-center justify-center text-xs font-bold text-white">OY</div>
             <div>
-              <span className="font-bold text-lg">OYNA</span>
-              <p className="text-xs text-gray-500">Admin Panel</p>
+              <span className="font-semibold text-sm text-white">OYNA Admin</span>
+              <p className="text-[11px] text-[#9CA3AF]">Operations</p>
             </div>
           </div>
         </div>
 
-        <nav className="flex-1 px-3 py-6 space-y-2">
+        <nav className="flex gap-1 overflow-x-auto px-3 py-3 md:flex-1 md:flex-col md:overflow-visible md:py-4">
           {navigation.map((item) => {
             const isActive = location.pathname === item.href;
             return (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                  isActive ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white hover:bg-[#252538]'
+                className={`flex min-w-fit items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  isActive ? 'bg-[#374151] text-white' : 'text-[#D1D5DB] hover:bg-[#2B3645] hover:text-white'
                 }`}
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon className="w-4 h-4" />
                 <span>{item.name}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-[#2a2a3b]">
-          <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-[#202031]">
-            <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-sm font-bold text-white">AD</span>
+        <div className="hidden md:block p-4 border-t border-[#374151]">
+          <div className="flex items-center gap-3 rounded-md bg-[#2B3645] px-3 py-2">
+            <div className="w-9 h-9 bg-[#2563EB] rounded-md flex items-center justify-center">
+              <span className="text-xs font-semibold text-white">AD</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">Admin User</p>
-              <p className="text-xs text-gray-500 truncate">admin@oyna.app</p>
+              <p className="text-sm font-medium text-white truncate">Admin User</p>
+              <p className="text-xs text-[#9CA3AF] truncate">admin@oyna.app</p>
             </div>
           </div>
         </div>
       </aside>
 
-      <div className="pl-64">
-        <header className="h-16 bg-[#171722] border-b border-[#2a2a3b] flex items-center justify-between px-8 sticky top-0 z-30">
-          <div>
-            <h1 className="text-xl font-bold">
-              {navigation.find((item) => item.href === location.pathname)?.name || 'Dashboard'}
-            </h1>
-            <p className="text-xs text-gray-500 mt-0.5">OYNA control panel</p>
-          </div>
-
-          <div className="px-4 py-2 rounded-xl bg-[#202031] border border-[#2a2a3b]">
-            <div className="text-sm font-medium text-gray-300">
+      <div className="md:pl-64">
+        <header className="sticky top-0 z-30 border-b border-[#E5E7EB] bg-white px-4 py-3 md:px-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-semibold text-[#111827]">{currentPage}</h1>
+              <p className="text-xs text-[#6B7280]">Operational control panel</p>
+            </div>
+            <div className="rounded-md border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-1.5 text-xs font-medium text-[#374151]">
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'short',
                 month: 'short',
@@ -76,7 +74,7 @@ export function DashboardLayout() {
           </div>
         </header>
 
-        <main className="p-8">
+        <main className="p-4 md:p-6">
           <Outlet />
         </main>
       </div>

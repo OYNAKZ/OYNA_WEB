@@ -26,107 +26,121 @@ export function PCTable({ pcs }: PCTableProps) {
   });
 
   const getStatusBadge = (status: PC['status']) => {
-    switch (status) {
-      case 'online':
-        return <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30">Online</Badge>;
-      case 'offline':
-        return <Badge className="bg-gray-500/10 text-gray-400 border-gray-500/30">Offline</Badge>;
-      case 'reserved':
-        return <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30">Reserved</Badge>;
+    if (status === 'online') {
+      return (
+        <Badge className="border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#16A34A]" />
+          Active
+        </Badge>
+      );
     }
+
+    if (status === 'reserved') {
+      return (
+        <Badge className="border-[#FDE68A] bg-[#FEFCE8] text-[#854D0E]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#CA8A04]" />
+          Reserved
+        </Badge>
+      );
+    }
+
+    return (
+      <Badge className="border-[#D1D5DB] bg-[#F9FAFB] text-[#4B5563]">
+        <span className="h-1.5 w-1.5 rounded-full bg-[#9CA3AF]" />
+        Offline
+      </Badge>
+    );
   };
 
   const getTempColor = (temp: number) => {
-    if (temp < 50) return 'text-emerald-400 bg-emerald-500/10';
-    if (temp < 65) return 'text-amber-400 bg-amber-500/10';
-    return 'text-rose-400 bg-rose-500/10';
+    if (temp < 50) return 'border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]';
+    if (temp < 65) return 'border-[#FDE68A] bg-[#FEFCE8] text-[#854D0E]';
+    return 'border-[#FECACA] bg-[#FEF2F2] text-[#991B1B]';
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search PCs or users..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#1a1a24] border border-[#27273a] rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
-          />
-        </div>
+      <div className="rounded-md border border-[#E5E7EB] bg-white p-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+            <input
+              type="text"
+              placeholder="Search PCs or users..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-md border border-[#D1D5DB] bg-white pl-10 pr-3 py-2 text-sm text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#BFDBFE]"
+            />
+          </div>
 
-        <div className="flex gap-2">
-          {(['all', 'online', 'offline', 'reserved'] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                statusFilter === status
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30'
-                  : 'bg-[#1a1a24] text-gray-400 hover:text-white hover:bg-[#27273a] border border-[#27273a]'
-              }`}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-            </button>
-          ))}
+          <div className="flex flex-wrap gap-2">
+            {(['all', 'online', 'offline', 'reserved'] as const).map((status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+                  statusFilter === status
+                    ? 'border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]'
+                    : 'border-[#D1D5DB] bg-white text-[#4B5563] hover:bg-[#F9FAFB]'
+                }`}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-[#1a1a24] to-[#1f1f2e] border border-[#27273a]/50 rounded-2xl overflow-hidden shadow-xl">
+      <div className="rounded-md border border-[#E5E7EB] bg-white overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#27273a]/50 bg-[#1a1a24]/50">
-                <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">PC Name</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Session Time</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Temperature</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Specs</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+              <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">PC Name</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Status</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">User</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Session</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Temp</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Specs</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredPCs.map((pc, index) => (
                 <tr
                   key={pc.id}
-                  className={`border-b border-[#27273a]/30 hover:bg-[#27273a]/20 transition-colors group ${
+                  className={`border-b border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors ${
                     index === filteredPCs.length - 1 ? 'border-b-0' : ''
                   }`}
                 >
-                  <td className="py-4 px-6">
-                    <span className="font-semibold text-white">{pc.name}</span>
+                  <td className="py-2.5 px-4">
+                    <span className="font-medium text-[#111827]">{pc.name}</span>
                   </td>
-                  <td className="py-4 px-6">{getStatusBadge(pc.status)}</td>
-                  <td className="py-4 px-6">
-                    <span className="text-gray-300">{pc.user || <span className="text-gray-600">-</span>}</span>
-                  </td>
-                  <td className="py-4 px-6">
-                    <span className="text-gray-300">{pc.sessionTime || <span className="text-gray-600">-</span>}</span>
-                  </td>
-                  <td className="py-4 px-6">
-                    <span className={`font-semibold px-2.5 py-1 rounded-lg ${getTempColor(pc.temperature)}`}>
+                  <td className="py-2.5 px-4">{getStatusBadge(pc.status)}</td>
+                  <td className="py-2.5 px-4 text-[#374151]">{pc.user || '-'}</td>
+                  <td className="py-2.5 px-4 text-[#6B7280]">{pc.sessionTime || '-'}</td>
+                  <td className="py-2.5 px-4">
+                    <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${getTempColor(pc.temperature)}`}>
                       {pc.temperature} C
                     </span>
                   </td>
-                  <td className="py-4 px-6">
-                    <span className="text-sm text-gray-400">{pc.specs}</span>
+                  <td className="py-2.5 px-4">
+                    <span className="text-xs text-[#6B7280]">{pc.specs}</span>
                   </td>
-                  <td className="py-4 px-6">
+                  <td className="py-2.5 px-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-2 hover:bg-[#27273a] rounded-lg transition-colors opacity-0 group-hover:opacity-100">
+                        <button className="rounded-md p-1.5 text-[#6B7280] hover:bg-[#F3F4F6] transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-[#1a1a24] border-[#27273a]">
-                        <DropdownMenuItem className="cursor-pointer hover:bg-[#27273a] focus:bg-[#27273a]">
-                          <Power className="w-4 h-4 mr-2" />
+                      <DropdownMenuContent align="end" className="bg-white border-[#E5E7EB] text-[#111827]">
+                        <DropdownMenuItem className="cursor-pointer focus:bg-[#F3F4F6]">
+                          <Power className="w-4 h-4 mr-2 text-[#6B7280]" />
                           Restart
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer hover:bg-[#27273a] focus:bg-[#27273a]">
-                          <Ban className="w-4 h-4 mr-2" />
+                        <DropdownMenuItem className="cursor-pointer focus:bg-[#F3F4F6]">
+                          <Ban className="w-4 h-4 mr-2 text-[#6B7280]" />
                           Force Logout
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -139,19 +153,20 @@ export function PCTable({ pcs }: PCTableProps) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-2">
-        <div className="text-sm text-gray-500">
-          Showing <span className="font-semibold text-indigo-400">{filteredPCs.length}</span> of{' '}
-          <span className="font-semibold text-white">{pcs.length}</span> PCs
+      <div className="flex flex-col gap-3 px-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-sm text-[#6B7280]">
+          Showing <span className="font-semibold text-[#111827]">{filteredPCs.length}</span> of{' '}
+          <span className="font-semibold text-[#111827]">{pcs.length}</span> PCs
         </div>
+
         <div className="flex items-center gap-2">
-          <button className="px-3 py-1.5 rounded-lg text-sm bg-[#1a1a24] border border-[#27273a] text-gray-400 hover:text-white hover:bg-[#27273a] transition-all">
+          <button className="rounded-md border border-[#D1D5DB] bg-white px-3 py-1.5 text-xs font-medium text-[#4B5563] hover:bg-[#F9FAFB] transition-colors">
             Previous
           </button>
-          <button className="px-3 py-1.5 rounded-lg text-sm bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30">
+          <button className="rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-3 py-1.5 text-xs font-semibold text-[#1D4ED8]">
             1
           </button>
-          <button className="px-3 py-1.5 rounded-lg text-sm bg-[#1a1a24] border border-[#27273a] text-gray-400 hover:text-white hover:bg-[#27273a] transition-all">
+          <button className="rounded-md border border-[#D1D5DB] bg-white px-3 py-1.5 text-xs font-medium text-[#4B5563] hover:bg-[#F9FAFB] transition-colors">
             Next
           </button>
         </div>

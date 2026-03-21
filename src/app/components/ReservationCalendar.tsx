@@ -43,16 +43,16 @@ export function ReservationCalendar({ reservations }: ReservationCalendarProps) 
   const today = new Date();
 
   return (
-    <div className="bg-[#111111] border border-gray-800 rounded-xl p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold">
+    <div className="rounded-md border border-[#E5E7EB] bg-white p-4">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-[#111827]">
           {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
         </h3>
         <div className="flex gap-2">
-          <button onClick={previousMonth} className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
+          <button onClick={previousMonth} className="rounded-md border border-[#D1D5DB] p-1.5 text-[#4B5563] hover:bg-[#F9FAFB] transition-colors">
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <button onClick={nextMonth} className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
+          <button onClick={nextMonth} className="rounded-md border border-[#D1D5DB] p-1.5 text-[#4B5563] hover:bg-[#F9FAFB] transition-colors">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -60,7 +60,7 @@ export function ReservationCalendar({ reservations }: ReservationCalendarProps) 
 
       <div className="grid grid-cols-7 gap-2">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <div key={day} className="text-center text-xs font-medium text-gray-400 py-2">
+          <div key={day} className="py-1 text-center text-[11px] font-semibold uppercase tracking-wide text-[#6B7280]">
             {day}
           </div>
         ))}
@@ -80,22 +80,22 @@ export function ReservationCalendar({ reservations }: ReservationCalendarProps) 
           return (
             <div
               key={day}
-              className={`aspect-square border border-gray-800 rounded-lg p-2 hover:border-gray-600 transition-colors cursor-pointer ${
-                isToday ? 'bg-blue-500/10 border-blue-500/30' : ''
+              className={`aspect-square rounded-md border p-2 transition-colors cursor-pointer ${
+                isToday ? 'border-[#BFDBFE] bg-[#EFF6FF]' : 'border-[#E5E7EB] hover:bg-[#F9FAFB]'
               }`}
             >
               <div className="flex flex-col h-full">
-                <div className={`text-sm mb-1 ${isToday ? 'text-blue-500 font-semibold' : 'text-gray-300'}`}>
+                <div className={`mb-1 text-xs ${isToday ? 'text-[#1D4ED8] font-semibold' : 'text-[#374151]'}`}>
                   {day}
                 </div>
                 {dayReservations.length > 0 && (
                   <div className="flex-1 flex flex-col gap-1">
                     {dayReservations.slice(0, 2).map((res, idx) => (
-                      <div key={idx} className="text-xs px-1 py-0.5 bg-blue-500/20 text-blue-400 rounded truncate">
+                      <div key={idx} className="truncate rounded border border-[#BFDBFE] bg-[#EFF6FF] px-1 py-0.5 text-[10px] text-[#1D4ED8]">
                         {res.pcName}
                       </div>
                     ))}
-                    {dayReservations.length > 2 && <div className="text-xs text-gray-500">+{dayReservations.length - 2} more</div>}
+                    {dayReservations.length > 2 && <div className="text-[10px] text-[#6B7280]">+{dayReservations.length - 2} more</div>}
                   </div>
                 )}
               </div>

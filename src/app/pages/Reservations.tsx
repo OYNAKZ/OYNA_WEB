@@ -5,16 +5,10 @@ import { Calendar, Clock } from 'lucide-react';
 
 export function Reservations() {
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'active':
-        return <Badge className="bg-green-500/10 text-green-500 border-green-500/30">Active</Badge>;
-      case 'upcoming':
-        return <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/30">Upcoming</Badge>;
-      case 'completed':
-        return <Badge className="bg-gray-500/10 text-gray-500 border-gray-500/30">Completed</Badge>;
-      case 'cancelled':
-        return <Badge className="bg-red-500/10 text-red-500 border-red-500/30">Cancelled</Badge>;
-    }
+    if (status === 'active') return <Badge className="border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]">Active</Badge>;
+    if (status === 'upcoming') return <Badge className="border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]">Upcoming</Badge>;
+    if (status === 'cancelled') return <Badge className="border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]">Cancelled</Badge>;
+    return <Badge className="border-[#D1D5DB] bg-[#F9FAFB] text-[#4B5563]">Completed</Badge>;
   };
 
   const formatTime = (dateString: string) => {
@@ -28,13 +22,13 @@ export function Reservations() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold mb-2">Reservations</h2>
-          <p className="text-gray-400">Manage PC reservations and bookings</p>
+          <h2 className="text-xl font-semibold text-[#111827]">Reservations</h2>
+          <p className="text-sm text-[#6B7280]">Manage PC reservations and bookings</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+        <button className="inline-flex items-center gap-2 rounded-md border border-[#2563EB] bg-[#2563EB] px-3 py-2 text-sm font-medium text-white hover:bg-[#1D4ED8] transition-colors">
           <Calendar className="w-4 h-4" />
           New Reservation
         </button>
@@ -44,20 +38,20 @@ export function Reservations() {
       <ReservationCalendar reservations={reservations} />
 
       {/* Reservations Table */}
-      <div className="bg-[#111111] border border-gray-800 rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-gray-800">
-          <h3 className="font-semibold">All Reservations</h3>
+      <div className="rounded-md border border-[#E5E7EB] bg-white overflow-hidden">
+        <div className="border-b border-[#E5E7EB] px-4 py-3">
+          <h3 className="text-sm font-semibold text-[#111827]">All Reservations</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-800">
-                <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">PC</th>
-                <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">User</th>
-                <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">Date</th>
-                <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">Time</th>
-                <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">Duration</th>
-                <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">Status</th>
+              <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">PC</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">User</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Date</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Time</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Duration</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -66,29 +60,29 @@ export function Reservations() {
                 return (
                   <tr
                     key={reservation.id}
-                    className={`border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors ${
+                    className={`border-b border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors ${
                       index === reservations.length - 1 ? 'border-b-0' : ''
                     }`}
                   >
-                    <td className="py-4 px-6">
-                      <span className="font-medium">{reservation.pcName}</span>
+                    <td className="py-2.5 px-4">
+                      <span className="font-medium text-[#111827]">{reservation.pcName}</span>
                     </td>
-                    <td className="py-4 px-6">
-                      <span className="text-gray-300">{reservation.userName}</span>
+                    <td className="py-2.5 px-4">
+                      <span className="text-[#374151]">{reservation.userName}</span>
                     </td>
-                    <td className="py-4 px-6">
-                      <span className="text-gray-300">{formatDate(reservation.startTime)}</span>
+                    <td className="py-2.5 px-4">
+                      <span className="text-[#374151]">{formatDate(reservation.startTime)}</span>
                     </td>
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-1 text-gray-300">
+                    <td className="py-2.5 px-4">
+                      <div className="flex items-center gap-1 text-[#6B7280]">
                         <Clock className="w-3 h-3" />
                         {formatTime(reservation.startTime)} - {formatTime(reservation.endTime)}
                       </div>
                     </td>
-                    <td className="py-4 px-6">
-                      <span className="text-gray-300">{duration}h</span>
+                    <td className="py-2.5 px-4">
+                      <span className="text-[#374151]">{duration}h</span>
                     </td>
-                    <td className="py-4 px-6">
+                    <td className="py-2.5 px-4">
                       {getStatusBadge(reservation.status)}
                     </td>
                   </tr>
