@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { PC } from '../data/mockData';
 import { Search, MoreVertical, Power, Ban } from 'lucide-react';
 import { Badge } from './ui/badge';
+import type { LivePC } from '../types/live';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,12 +10,14 @@ import {
 } from './ui/dropdown-menu';
 
 interface PCTableProps {
-  pcs: PC[];
+  pcs: LivePC[];
+  runningCommandFor?: string | null;
+  onRunSystemAction?: (pcId: string, actionId: 'restart' | 'signOut') => void;
 }
 
-export function PCTable({ pcs }: PCTableProps) {
+export function PCTable({ pcs, runningCommandFor = null, onRunSystemAction }: PCTableProps) {
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<PC['status'] | 'all'>('all');
+  const [statusFilter, setStatusFilter] = useState<LivePC['status'] | 'all'>('all');
 
   const filteredPCs = pcs.filter((pc) => {
     const matchesSearch =
@@ -25,7 +27,7 @@ export function PCTable({ pcs }: PCTableProps) {
     return matchesSearch && matchesStatus;
   });
 
-  const getStatusBadge = (status: PC['status']) => {
+  const getStatusBadge = (status: LivePC['status']) => {
     if (status === 'online') {
       return (
         <Badge className="border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]">
@@ -130,16 +132,25 @@ export function PCTable({ pcs }: PCTableProps) {
                   <td className="py-2.5 px-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="rounded-md p-1.5 text-[#6B7280] hover:bg-[#F3F4F6] transition-colors">
+                        <button
+                          disabled={runningCommandFor === pc.id}
+                          className="rounded-md p-1.5 text-[#6B7280] hover:bg-[#F3F4F6] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="bg-white border-[#E5E7EB] text-[#111827]">
-                        <DropdownMenuItem className="cursor-pointer focus:bg-[#F3F4F6]">
+                        <DropdownMenuItem
+                          onClick={() => onRunSystemAction?.(pc.id, 'restart')}
+                          className="cursor-pointer focus:bg-[#F3F4F6]"
+                        >
                           <Power className="w-4 h-4 mr-2 text-[#6B7280]" />
                           Restart
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer focus:bg-[#F3F4F6]">
+                        <DropdownMenuItem
+                          onClick={() => onRunSystemAction?.(pc.id, 'signOut')}
+                          className="cursor-pointer focus:bg-[#F3F4F6]"
+                        >
                           <Ban className="w-4 h-4 mr-2 text-[#6B7280]" />
                           Force Logout
                         </DropdownMenuItem>

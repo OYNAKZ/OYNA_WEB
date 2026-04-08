@@ -1,0 +1,10 @@
+services:
+  oyna-web:
+    build:
+      context: .
+      args:
+        VITE_BASE_PATH: ${VITE_BASE_PATH:-/}
+    image: oyna-web:local
+    ports:
+      - "8080:80"
+    restart: unless-stopped

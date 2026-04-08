@@ -1,12 +1,12 @@
-import { Activity } from '../data/mockData';
-import { LogIn, LogOut, Calendar, CreditCard } from 'lucide-react';
+import { LogIn, LogOut, Calendar, CreditCard, Activity as SystemActivity } from 'lucide-react';
+import type { LiveActivity } from '../types/live';
 
 interface ActivityListProps {
-  activities: Activity[];
+  activities: LiveActivity[];
 }
 
 export function ActivityList({ activities }: ActivityListProps) {
-  const getActivityIcon = (type: Activity['type']) => {
+  const getActivityIcon = (type: LiveActivity['type']) => {
     switch (type) {
       case 'login':
         return LogIn;
@@ -16,14 +16,17 @@ export function ActivityList({ activities }: ActivityListProps) {
         return Calendar;
       case 'payment':
         return CreditCard;
+      default:
+        return SystemActivity;
     }
   };
 
-  const getActivityLabel = (type: Activity['type']) => {
+  const getActivityLabel = (type: LiveActivity['type']) => {
     if (type === 'login') return 'Login';
     if (type === 'logout') return 'Logout';
     if (type === 'reservation') return 'Reservation';
-    return 'Payment';
+    if (type === 'payment') return 'Payment';
+    return 'System';
   };
 
   return (

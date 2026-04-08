@@ -6,7 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "npm run test:hub",
+    "test:hub": "node --test test/hub-smoke.test.js",
+    "ci": "npm run build && npm test",
+    "hub:start": "node hub/server.js",
+    "hub:dev": "node --watch hub/server.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "1.1.6",
@@ -24,6 +29,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "4.7.0",
     "tailwindcss": "4.1.12",
     "vite": "6.3.5"

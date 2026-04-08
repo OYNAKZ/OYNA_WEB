@@ -2,8 +2,12 @@ import { reservations } from '../data/mockData';
 import { ReservationCalendar } from '../components/ReservationCalendar';
 import { Badge } from '../components/ui/badge';
 import { Calendar, Clock } from 'lucide-react';
+import { useState } from 'react';
+
 
 export function Reservations() {
+  const[openModal, setOpenModal] = useState(0)
+
   const getStatusBadge = (status: string) => {
     if (status === 'active') return <Badge className="border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]">Active</Badge>;
     if (status === 'upcoming') return <Badge className="border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]">Upcoming</Badge>;
@@ -23,6 +27,9 @@ export function Reservations() {
 
   return (
     <div className="space-y-5">
+      <div className='abosulte'>
+        {openModal ? <div></div> : <div>None</div>}
+      </div>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold text-[#111827]">Reservations</h2>
@@ -34,10 +41,8 @@ export function Reservations() {
         </button>
       </div>
 
-      {/* Calendar */}
       <ReservationCalendar reservations={reservations} />
 
-      {/* Reservations Table */}
       <div className="rounded-md border border-[#E5E7EB] bg-white overflow-hidden">
         <div className="border-b border-[#E5E7EB] px-4 py-3">
           <h3 className="text-sm font-semibold text-[#111827]">All Reservations</h3>

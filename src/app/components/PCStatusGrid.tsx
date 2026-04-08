@@ -1,11 +1,11 @@
-import { PC } from '../data/mockData';
+import type { LivePC } from '../types/live';
 
 interface PCStatusGridProps {
-  pcs: PC[];
+  pcs: LivePC[];
 }
 
 export function PCStatusGrid({ pcs }: PCStatusGridProps) {
-  const getStatusMeta = (status: PC['status']) => {
+  const getStatusMeta = (status: LivePC['status']) => {
     if (status === 'online') {
       return {
         label: 'Active',

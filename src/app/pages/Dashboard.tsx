@@ -2,9 +2,10 @@ import { Monitor, Users, DollarSign, Wallet } from 'lucide-react';
 import { StatCard } from '../components/StatCard';
 import { PCStatusGrid } from '../components/PCStatusGrid';
 import { ActivityList } from '../components/ActivityList';
-import { pcs, activities } from '../data/mockData';
+import { useHubLiveData } from '../hooks/useHubLiveData';
 
 export function Dashboard() {
+  const { pcs, activities, error, loading, lastUpdatedAt } = useHubLiveData();
   const activePCs = pcs.filter((pc) => pc.status === 'online').length;
   const reservedPCs = pcs.filter((pc) => pc.status === 'reserved').length;
   const offlinePCs = pcs.filter((pc) => pc.status === 'offline').length;
@@ -19,19 +20,24 @@ export function Dashboard() {
             <p className="text-sm text-[#6B7280]">
               {activePCs} active PCs, {reservedPCs} reserved, {offlinePCs} offline
             </p>
+            {error ? <p className="text-xs text-[#B91C1C]">Hub error: {error}</p> : null}
           </div>
           <div className="text-xs text-[#6B7280]">
             Last updated:{' '}
-            {new Date().toLocaleTimeString('en-US', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
+            {lastUpdatedAt
+              ? new Date(lastUpdatedAt).toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : loading
+                ? 'loading...'
+                : 'never'}
           </div>
         </div>
         <div className="grid grid-cols-1 divide-y divide-[#E5E7EB] md:grid-cols-2 md:divide-y-0 lg:grid-cols-4 lg:divide-x lg:divide-[#E5E7EB]">
           <StatCard title="Active PCs" value={activePCs} icon={Monitor} trend={{ value: '+12%', positive: true }} />
           <StatCard title="Reserved PCs" value={reservedPCs} icon={Monitor} trend={{ value: '+5%', positive: true }} />
-          <StatCard title="Revenue Today" value="$847" icon={DollarSign} trend={{ value: '+23%', positive: true }} />
+          <StatCard title="Revenue Today" value="--" icon={DollarSign} trend={{ value: 'hub-only mode', positive: true }} />
           <StatCard title="Online Users" value={onlineUsers} icon={Users} trend={{ value: '-3%', positive: false }} />
         </div>
       </section>
