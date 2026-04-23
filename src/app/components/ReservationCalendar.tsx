@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { Reservation } from '../data/mockData';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ReservationCalendarProps {
-  reservations: Reservation[];
+  reservations: Array<{
+    id: string | number;
+    pcName: string;
+    startTime: string;
+  }>;
 }
 
 export function ReservationCalendar({ reservations }: ReservationCalendarProps) {

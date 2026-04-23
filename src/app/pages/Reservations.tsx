@@ -1,17 +1,51 @@
-import { reservations } from '../data/mockData';
 import { ReservationCalendar } from '../components/ReservationCalendar';
 import { Badge } from '../components/ui/badge';
 import { Calendar, Clock } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+import { ApiError, backendApi } from '../lib/apiClient';
+import type { BackendOperationalReservation, BackendUser } from '../types/backend';
 
 
 export function Reservations() {
-  const[openModal, setOpenModal] = useState(0)
+  const [openModal] = useState(0);
+  const [reservations, setReservations] = useState<BackendOperationalReservation[]>([]);
+  const [users, setUsers] = useState<BackendUser[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void Promise.all([backendApi.getOperationalReservations(), backendApi.getUsers()])
+      .then(([reservationResponse, usersResponse]) => {
+        if (!cancelled) {
+          setReservations(reservationResponse.items);
+          setUsers(usersResponse);
+          setError(null);
+        }
+      })
+      .catch((requestError) => {
+        if (!cancelled) {
+          setError(requestError instanceof ApiError ? requestError.message : 'Failed to load reservations');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const userLookup = useMemo(() => new Map(users.map((user) => [user.id, user])), [users]);
 
   const getStatusBadge = (status: string) => {
-    if (status === 'active') return <Badge className="border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]">Active</Badge>;
-    if (status === 'upcoming') return <Badge className="border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]">Upcoming</Badge>;
-    if (status === 'cancelled') return <Badge className="border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]">Cancelled</Badge>;
+    if (status === 'session_started' || status === 'checked_in') return <Badge className="border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]">Active</Badge>;
+    if (status === 'confirmed' || status === 'pending_payment') return <Badge className="border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]">Upcoming</Badge>;
+    if (status === 'cancelled' || status === 'expired' || status === 'no_show') return <Badge className="border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]">Cancelled</Badge>;
     return <Badge className="border-[#D1D5DB] bg-[#F9FAFB] text-[#4B5563]">Completed</Badge>;
   };
 
@@ -35,13 +69,21 @@ export function Reservations() {
           <h2 className="text-xl font-semibold text-[#111827]">Reservations</h2>
           <p className="text-sm text-[#6B7280]">Manage PC reservations and bookings</p>
         </div>
-        <button className="inline-flex items-center gap-2 rounded-md border border-[#2563EB] bg-[#2563EB] px-3 py-2 text-sm font-medium text-white hover:bg-[#1D4ED8] transition-colors">
+        <button disabled className="inline-flex items-center gap-2 rounded-md border border-[#2563EB] bg-[#2563EB] px-3 py-2 text-sm font-medium text-white opacity-60">
           <Calendar className="w-4 h-4" />
-          New Reservation
+          Managed In Backend
         </button>
       </div>
 
-      <ReservationCalendar reservations={reservations} />
+      {error ? <p className="text-sm text-[#B91C1C]">{error}</p> : null}
+
+      <ReservationCalendar
+        reservations={reservations.map((reservation) => ({
+          id: reservation.id,
+          pcName: reservation.seat.code,
+          startTime: reservation.start_at,
+        }))}
+      />
 
       <div className="rounded-md border border-[#E5E7EB] bg-white overflow-hidden">
         <div className="border-b border-[#E5E7EB] px-4 py-3">
@@ -60,8 +102,14 @@ export function Reservations() {
               </tr>
             </thead>
             <tbody>
+              {loading ? (
+                <tr>
+                  <td className="px-4 py-6 text-sm text-[#6B7280]" colSpan={6}>Loading reservations...</td>
+                </tr>
+              ) : null}
               {reservations.map((reservation, index) => {
-                const duration = (new Date(reservation.endTime).getTime() - new Date(reservation.startTime).getTime()) / (1000 * 60 * 60);
+                const duration = (new Date(reservation.end_at).getTime() - new Date(reservation.start_at).getTime()) / (1000 * 60 * 60);
+                const user = userLookup.get(reservation.user_id);
                 return (
                   <tr
                     key={reservation.id}
@@ -70,18 +118,18 @@ export function Reservations() {
                     }`}
                   >
                     <td className="py-2.5 px-4">
-                      <span className="font-medium text-[#111827]">{reservation.pcName}</span>
+                      <span className="font-medium text-[#111827]">{reservation.seat.code}</span>
                     </td>
                     <td className="py-2.5 px-4">
-                      <span className="text-[#374151]">{reservation.userName}</span>
+                      <span className="text-[#374151]">{user?.full_name || user?.email || `User #${reservation.user_id}`}</span>
                     </td>
                     <td className="py-2.5 px-4">
-                      <span className="text-[#374151]">{formatDate(reservation.startTime)}</span>
+                      <span className="text-[#374151]">{formatDate(reservation.start_at)}</span>
                     </td>
                     <td className="py-2.5 px-4">
                       <div className="flex items-center gap-1 text-[#6B7280]">
                         <Clock className="w-3 h-3" />
-                        {formatTime(reservation.startTime)} - {formatTime(reservation.endTime)}
+                        {formatTime(reservation.start_at)} - {formatTime(reservation.end_at)}
                       </div>
                     </td>
                     <td className="py-2.5 px-4">

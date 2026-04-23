@@ -1,5 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router';
-import { LayoutDashboard, Monitor, Calendar, Users, CreditCard } from 'lucide-react';
+import { LayoutDashboard, Monitor, Calendar, Users, CreditCard, LogOut } from 'lucide-react';
+
+import { useAuth } from '../context/AuthContext';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -11,7 +13,15 @@ const navigation = [
 
 export function DashboardLayout() {
   const location = useLocation();
+  const { user, logout } = useAuth();
   const currentPage = navigation.find((item) => item.href === location.pathname)?.name || 'Dashboard';
+  const displayName = user?.full_name?.trim() || user?.email || 'Admin User';
+  const initials = displayName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("") || "AD";
 
   return (
     <div className="min-h-screen bg-[#F6F7F9] text-[#111827]">
@@ -45,14 +55,23 @@ export function DashboardLayout() {
         </nav>
 
         <div className="hidden md:block p-4 border-t border-[#374151]">
-          <div className="flex items-center gap-3 rounded-md bg-[#2B3645] px-3 py-2">
-            <div className="w-9 h-9 bg-[#2563EB] rounded-md flex items-center justify-center">
-              <span className="text-xs font-semibold text-white">AD</span>
+          <div className="rounded-md bg-[#2B3645] px-3 py-2">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-[#2563EB] rounded-md flex items-center justify-center">
+                <span className="text-xs font-semibold text-white">{initials}</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">{displayName}</p>
+                <p className="text-xs text-[#9CA3AF] truncate">{user?.email || 'admin@oyna.local'}</p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">Admin User</p>
-              <p className="text-xs text-[#9CA3AF] truncate">admin@oyna.app</p>
-            </div>
+            <button
+              onClick={logout}
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#475569] px-3 py-2 text-xs font-medium text-[#E2E8F0] transition hover:bg-[#374151]"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </button>
           </div>
         </div>
       </aside>
